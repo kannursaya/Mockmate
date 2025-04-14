@@ -1,0 +1,174 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockmate</title>
+  <meta name="description" content="Mockmate helps you practice job interviews with voice recording and AI feedback.">
+  <link rel="icon" type="image/png" href="icon.png" />
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.80/build/spline-viewer.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.0.49/build/spline-viewer.js"></script>
+  <script type="module" src="script.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+
+
+</head>
+<body>
+
+<spline-viewer id="bg-spline" url="https://prod.spline.design/sm6rvDlqud0cPIhH/scene.splinecode"></spline-viewer>
+
+  <section id="intro">
+    <canvas id="matrixCanvas"></canvas>
+    <div class="loader-container">
+      <div class="left-side">
+        <div class="progress-container">
+          <div class="progress-bar" id="bar"></div>
+        </div>
+        <div id="percentage">0%</div>
+      </div>
+      <h1 class="typingText" id="typingText"></h1>
+    </div>
+  </section>
+
+  
+    <section id="hero-combined">
+      <nav class="navbar">
+        <ul class="nav-list">
+          <li><a href="index.html" class="nav-link active">Home</a></li>
+          <li><a href="letstalk.html" class="nav-link">Let's Talk</a></li>
+          <li><a href="auth/signup.html" class="nav-link">Sign In</a></li>
+          <li><a href="auth/login.html" class="nav-link">Log In</a></li>
+          <div class="nav-underline"></div>
+          <li id="auth-links"></li>
+          
+        </ul>
+        
+      </nav>
+      
+      
+        <div class="robot-container">
+          <div class="robot-text appear-on-scroll">
+            <h1>HELLO! MY NAME IS MOCKMATE<br>YOUR INTERVIEW ASSISTANT!</h1>
+          </div>
+          <div class="robot-viewer appear-on-scroll">
+            <spline-viewer url="https://prod.spline.design/HqXoeQB1KTDh4NC4/scene.splinecode"></spline-viewer>
+          </div>
+        </div>
+      
+        <section class="intro-explainer appear-on-scroll">
+            <div class="intro-card-container">
+              <div class="intro-card">
+                <h2 class="intro-heading">HOW CAN MOCKMATE HELP YOU LAND THE JOB?</h2>
+                <p>
+                  Mockmate is your personal AI Interview Assistant.<br />
+                  It simulates real interview scenarios,<br />
+                  analyzes your answers using advanced language models,<br />
+                  and provides instant feedback.
+                </p>
+              </div>
+          
+              <div class="rocket-animation">
+                <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+                <dotlottie-player 
+                  src="https://lottie.host/bc8df936-a20a-4c5d-a936-7887a7147e93/w8g0wofcSy.lottie" 
+                  background="transparent" 
+                  speed="1" 
+                  style="width: 400px; height: 400px;" 
+                  loop autoplay>
+                </dotlottie-player>
+              </div>
+            </div>
+          </section>
+          
+      <section class="carousel-section">
+        <h2 class="carousel-title">Key Features</h2>
+        <div class="carousel-wrapper">
+          <div class="carousel-track" id="carousel">
+            <!-- Slide 1 -->
+            <div class="carousel-slide">
+              <dotlottie-player src="https://lottie.host/11e5d570-136d-4b85-a9a2-15e40bd48d6e/iXQtr3phmU.lottie" background="transparent" speed="1" loop autoplay style="width:300px; height:300px;"></dotlottie-player>
+              <p>Practice interviews anytime, anywhere</p>
+            </div>
+            <!-- Slide 2 -->
+            <div class="carousel-slide">
+              <dotlottie-player src="https://lottie.host/ff8fbb8e-ad36-4a09-b386-d4299c5d6d16/7axauiMUX1.lottie" background="transparent" speed="1" loop autoplay style="width:300px; height:300px;"></dotlottie-player>
+              <p>Get real-time feedback on your answers and tone</p>
+            </div>
+            <!-- Slide 3 -->
+            <div class="carousel-slide">
+              <dotlottie-player src="https://lottie.host/3075ac80-4510-4709-b61a-74992d9384d3/prBwHCDvsZ.lottie" background="transparent" speed="1" loop autoplay style="width:300px; height:300px;"></dotlottie-player>
+              <p>Receive AI-generated tips for improvement</p>
+            </div>
+            <!-- Slide 4 -->
+            <div class="carousel-slide">
+              <dotlottie-player src="https://lottie.host/4e10e92e-a0f7-4c21-8427-90d5a24f005d/YlgypnTyEl.lottie" background="transparent" speed="1" loop autoplay style="width:300px; height:300px;"></dotlottie-player>
+              <p>Personalized insights based on your skills</p>
+            </div>
+            <!-- Slide 5 -->
+            <div class="carousel-slide">
+              <dotlottie-player src="https://lottie.host/a24f1358-7edc-446a-a339-a9633c5bc4d7/zjjEn2cFNh.lottie" background="transparent" speed="1" loop autoplay style="width:300px; height:300px;"></dotlottie-player>
+              <p>Train for specific roles and industries</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <section class="how-it-works">
+        <h2 class="how-title">HOW IT WORKS?</h2>
+        <div class="how-grid">
+          <div class="how-card">
+            <img src="target.png" alt="Target Icon" class="how-icon" />
+            <p>1. Choose your goal — Pick a job role or industry you're targeting.</p>
+          </div>
+          <div class="how-card">
+            <img src="rocket.png" alt="Video Call Icon" class="how-icon" />
+            <p>2. Start the interview — Answer questions asked by the AI interviewer.</p>
+          </div>
+          <div class="how-card">
+            <img src="bar-chart.png" alt="Idea Icon" class="how-icon" />
+            <p>3. Get feedback — Receive instant analysis and personalized suggestions.</p>
+          </div>
+          <div class="how-card">
+            <img src="idea.png" alt="Graph Icon" class="how-icon" />
+            <p>4. Track your growth — Watch your confidence and performance improve with every session.</p>
+          </div>
+          <div class="how-card">
+            <img src="agenda.png" alt="Graph Icon" class="how-icon" />
+            <p>5. Practice regularly — Sharpen your skills through repeated mock interviews tailored to your goals.</p>
+          </div>
+          <div class="how-card">
+            <img src="chronometer.png" alt="Graph Icon" class="how-icon" />
+            <p>6.  Review past sessions — Track your answers and see your progress to refine your strategy over time.</p>
+          </div>
+        </div>
+      </section>
+      
+
+      <section class="get-started-section appear-on-scroll">
+        <div class="get-started-container">
+          <div class="get-started-text">
+            <h2 class="get-started-title">Get Started Today</h2>
+            <p class="get-started-description">
+              Whether you're preparing for your first internship or your dream job,<br>
+              <strong>Mockmate</strong> gives you the tools and confidence to succeed.
+            </p>
+            <h3 class="lets-talk-title">Let's Talk!</h3>
+            <p class="lets-talk-description">
+                Need help or want to start practicing?
+                Hit “Start Talking to the AI” to chat with our AI and get real-time interview guidance.
+            </p>
+            <a href="letstalk.html" class="btn-34"><span>Start Talking with MockMate</span></a>
+          </div>
+        </div>
+      </section>
+
+
+      
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Interview Boot-Up</title>
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.80/build/spline-viewer.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Orbitron', sans-serif;
+      scroll-behavior: smooth;
+      background: black;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    section {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    #matrixCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .loader-container {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 5%;
+    }
+
+    .left-side {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .progress-container {
+      width: 250px;
+      height: 30px;
+      background: #222;
+      border: 2px solid white;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom:20px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: #8c38b4;
+      width: 0%;
+      transition: width 0.1s;
+    }
+
+    #percentage {
+      font-size: 100px;
+      font-weight: bold;
+      color: white;
+      margin: 10px;
+    }
+
+    .typingText {
+      font-size: 56px;
+      text-align: right;
+      white-space: pre-wrap;
+      margin-right: 30px;
+    }
+
+    #robot-section {
+      height: 100vh;
+      width: 100%;
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .robot-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .robot-text {
+      font-size: 38px;
+      color: white;
+      font-family: 'Orbitron', sans-serif;
+      line-height: 1.4;
+      margin-bottom: -160px;
+    }
+
+    .robot-viewer {
+      width: 700px;
+      height: 500px;
+    }
+
+    /* Scroll animation */
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(60px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .appear-on-scroll {
+      animation: appear 1s ease-out;
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+      will-change: transform, opacity;
+    }
+    /* === Button Base === */
+.btn-34,
+.btn-34 *,
+.btn-34 :after,
+.btn-34 :before,
+.btn-34:after,
+.btn-34:before {
+  border: 0 solid;
+  box-sizing: border-box;
+}
+
+.btn-34 {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: button;
+  background-color: #000;
+  background-image: none;
+  color: #fff;
+  cursor: pointer;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif,
+    Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  font-size: 100%;
+  font-weight: 900;
+  line-height: 1.5;
+  margin: 10px;
+  margin-top: 15px;
+  -webkit-mask-image: -webkit-radial-gradient(#000, #fff);
+  padding: 0;
+  text-transform: uppercase;
+  border-radius: 99rem;
+  border-width: 2px;
+  overflow: hidden;
+  padding: 0.8rem 3rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.btn-34:disabled {
+  cursor: default;
+}
+
+.btn-34 svg {
+  display: block;
+  vertical-align: middle;
+}
+
+.btn-34 [hidden] {
+  display: none;
+}
+
+.btn-34:hover {
+  transform: scale(1.1);
+}
+
+.btn-34 span {
+  font-weight: 900;
+  mix-blend-mode: difference;
+}
+
+.btn-34:before {
+  aspect-ratio: 1;
+  background: #fff;
+  border-radius: 50%;
+  content: "";
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s;
+  width: 0;
+}
+
+.btn-34:hover:before {
+  width: 100%;
+}
+
+/* === NavBar Layout === */
+.navbar {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  position: relative;
+  z-index: 10;
+}
+
+/* === Dropdown === */
+.menu-wrapper {
+  position: relative;
+}
+
+.dropdown {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 120%;
+  right: 0;
+  background: black;
+  border: 2px solid white;
+  border-radius: 1rem;
+  padding: 1rem;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.dropdown.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.dropdown .btn-34 {
+  margin: 5px 0;
+  width: 150px;
+  text-align: center;
+}
+.btn-34.active {
+  background-color: white;
+  color: black;
+  border: 2px solid white;
+  margin-top: 10px;
+}
+.btn-34.active span {
+  mix-blend-mode: normal;
+}
+.btn-34:not(.active):hover {
+  transform: scale(1.1);
+  color: white
+}
+
+.btn-34:not(.active):hover:before {
+  width: 100%;
+}
+
+body.lock-scroll {
+  overflow: hidden;
+}
+
+body.unlock-scroll {
+  overflow: auto;
+}
+
+
+  </style>
+</head>
+<body>
+
+  <!-- Section 1: Intro -->
+  <section id="intro">
+    <canvas id="matrixCanvas"></canvas>
+    <div class="loader-container">
+      <div class="left-side">
+        <div class="progress-container">
+          <div class="progress-bar" id="bar"></div>
+        </div>
+        <div id="percentage">0%</div>
+      </div>
+      <h1 class="typingText" id="typingText"></h1>
+    </div>
+  </section>
+  <header class="navbar">
+    <button class="btn-34 active"><span>Home Page</span></button>
+    <button class="btn-34"><span>Let's Talk</span></button>
+
+    <div class="menu-wrapper">
+      <button class="btn-34" id="menuToggle"><span>Menu</span></button>
+      <div class="dropdown" id="dropdownMenu">
+        <button class="btn-34"><span>Sign In</span></button>
+        <button class="btn-34"><span>Log In</span></button>
+        <button class="btn-34"><span>About Us</span></button>
+        <button class="btn-34"><span>My Profile</span></button>
+      </div>
+    </div>
+  </header>
+  <!-- Section 2: Robot -->
+  <section id="robot-section">
+    <div class="robot-container">
+      <div class="robot-text appear-on-scroll">
+        <h1>HELLO! MY NAME IS MOCKMATE<br>YOUR INTERVIEW ASSISTANT!</h1>
+      </div>
+      <div class="robot-viewer appear-on-scroll">
+        <spline-viewer url="https://prod.spline.design/HqXoeQB1KTDh4NC4/scene.splinecode"></spline-viewer>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Matrix Rain
+    const canvas = document.getElementById("matrixCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const letters = Array(256).join("1").split("");
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = Array.from({ length: columns }).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#b847ff";
+      ctx.font = fontSize + "px monospace";
+      drops.forEach((y, i) => {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        const x = i * fontSize;
+        ctx.fillText(text, x, y * fontSize);
+        if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      });
+    }
+    setInterval(drawMatrix, 50);
+
+  const bar = document.getElementById("bar");
+  const percent = document.getElementById("percentage");
+  const typingText = document.getElementById("typingText");
+  const robotSection = document.getElementById("robot-section");
+  const introSection = document.getElementById("intro");
+
+  const message = "ARE YOU\nREADY TO\nACE YOUR\nINTERVIEW?";
+  let displayText = "", textIndex = 0, progress = 0;
+
+  function typeLetter() {
+    if (textIndex < message.length) {
+      displayText += message[textIndex];
+      typingText.innerText = displayText;
+      textIndex++;
+      setTimeout(typeLetter, 40);
+    }
+  }
+  typeLetter();
+
+  const loadInterval = setInterval(() => {
+    progress++;
+    bar.style.width = progress + "%";
+    percent.innerText = progress + "%";
+
+    if (progress >= 100) {
+      clearInterval(loadInterval);
+
+      setTimeout(() => {
+        // Scroll to robot section
+        window.scrollTo({
+          top: window.innerHeight,
+          behavior: "smooth"
+        });
+
+        // Lock scroll back to intro after delay
+        setTimeout(() => {
+          // Optional: remove intro from flow or disable pointer
+          introSection.style.position = "fixed";
+          introSection.style.top = "-100vh";
+          introSection.style.opacity = "0";
+          introSection.style.pointerEvents = "none";
+        }, 1000); // wait till scroll animation finishes
+
+      }, 1000); // wait before scroll starts
+    }
+  }, 30);
+</script>
+
+  </script>
+  
+  
+  <script>
+    const menuBtn = document.getElementById("menuToggle");
+    const dropdown = document.getElementById("dropdownMenu");
+  
+    menuBtn.addEventListener("click", () => {
+      dropdown.classList.toggle("show");
+    });
+  
+    // Optional: close dropdown when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove("show");
+      }
+    });
+    
+  </script>
+  <script>
+    const currentPath = window.location.pathname;
+    document.querySelectorAll('.btn-34').forEach(button => {
+      if (button.textContent.includes("HOME PAGE") && currentPath === "/index.html") {
+        button.classList.add("active");
+      }
+    });
+  </script>
+  
+  
+
+  
+  
+  
+
+</body>
+</html>

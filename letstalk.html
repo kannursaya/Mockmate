@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mockmate Voice Interview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #111;
+      color: white;
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      margin: 10px;
+      font-weight: bold;
+      box-shadow: 0 0 15px #b847ff66;
+    }
+    #startBtn {
+      background: #b847ff;
+      color: white;
+    }
+    #stopBtn {
+      background: #555;
+      color: white;
+    }
+    #feedbackBtn {
+      background: #00c853;
+      color: white;
+      display: none;
+    }
+    #recordingStatus {
+      margin: 20px;
+      font-size: 1rem;
+    }
+    audio {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 400px;
+    }
+    #transcriptBox, #feedbackBox {
+      margin-top: 20px;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 15px;
+      width: 100%;
+      max-width: 600px;
+      color: #cfc;
+      font-style: italic;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🎙️ Mockmate Voice Interview</h1>
+<p><strong>Question:</strong> What is your biggest strength and how has it helped you in a project?</p>
+
+<button id="startBtn">🎙️ Start Recording</button>
+<button id="stopBtn" disabled>⏹️ Stop</button>
+<button id="feedbackBtn">🧠 Get Feedback</button>
+
+<p id="recordingStatus">Not recording...</p>
+<audio id="audioPlayback" controls style="display:none;"></audio>
+<div id="transcriptBox">📝 Transcript will appear here...</div>
+<div id="feedbackBox"></div>
+
+<script>
+  let mediaRecorder;
+  let audioChunks = [];
+  let recognition;
+  let finalTranscript = "";
+
+  const startBtn = document.getElementById("startBtn");
+  const stopBtn = document.getElementById("stopBtn");
+  const status = document.getElementById("recordingStatus");
+  const playback = document.getElementById("audioPlayback");
+  const transcriptBox = document.getElementById("transcriptBox");
+  const feedbackBtn = document.getElementById("feedbackBtn");
+  const feedbackBox = document.getElementById("feedbackBox");
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+
+    recognition.onresult = (event) => {
+      finalTranscript = Array.from(event.results)
+        .map(r => r[0].transcript)
+        .join(" ");
+      transcriptBox.textContent = "📝 " + finalTranscript;
+      feedbackBtn.style.display = "inline-block";
+    };
+
+    recognition.onerror = (event) => {
+      transcriptBox.textContent = "❌ Speech Recognition Error: " + event.error;
+    };
+  } else {
+    transcriptBox.textContent = "❌ Your browser doesn't support Speech Recognition API.";
+  }
+
+  startBtn.onclick = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(audioChunks, { type: "audio/webm" });
+      const url = URL.createObjectURL(blob);
+      playback.src = url;
+      playback.style.display = "block";
+      stopSpeechToText();
+    };
+
+    mediaRecorder.start();
+    startSpeechToText();
+    status.innerText = "🎙️ Recording...";
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+  };
+
+  stopBtn.onclick = () => {
+    mediaRecorder.stop();
+    status.innerText = "✅ Recording stopped";
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+  };
+
+  function startSpeechToText() {
+    if (recognition) recognition.start();
+  }
+
+  function stopSpeechToText() {
+    if (recognition) recognition.stop();
+  }
+
+  feedbackBtn.onclick = async () => {
+    feedbackBox.innerText = "🤖 Thinking...";
+    try {
+      const res = await fetch("http://localhost:5000/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: `Give constructive interview feedback for this answer:\n${finalTranscript}`
+        })
+      });
+      const data = await res.json();
+      feedbackBox.innerText = `🤖 Feedback from Mockmate:\n${data.reply}`;
+    } catch (err) {
+      feedbackBox.innerText = "❌ Failed to get feedback from server.";
+    }
+  };
+</script>
+
+</body>
+</html>

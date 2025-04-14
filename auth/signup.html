@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - Mockmate</title>
+  <link rel="stylesheet" href="signup.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.0.49/build/spline-viewer.js"></script>
+  <script type="module" src="signup.js" defer></script>
+</head>
+<body>
+
+  <!-- Animated 3D Spline Background -->
+  <spline-viewer id="bg-spline" url="https://prod.spline.design/sm6rvDlqud0cPIhH/scene.splinecode"></spline-viewer>
+
+  <!-- Sign Up Form Container -->
+  <div class="signup-container">
+    <h2>Create Your Mockmate Account</h2>
+
+    <form id="signup-form">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+
+      <button id="submit" type="submit" class="btn-34"><span>Sign In</span></button>
+    </form>
+
+    <div class="form-footer">
+      <p>Already have an account? <a href="login.html">Log in here</a></p>
+    </div>
+  </div>
+
+  <!-- Firebase Signup Script -->
+  
+</body>
+</html>
